@@ -1,0 +1,38 @@
+services:
+  frontend:
+    build:
+      context: ./social-media-frontend
+      dockerfile: Dockerfile
+    container_name: social-media-frontend
+    ports:
+      - "3000:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./.env:/var/www/html/.env
+    networks:
+      - my_network
+    environment:
+
+    depends_on:
+    
+
+  mysql-db:
+    image: mysql:8.0
+    container_name: legislation_sys_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: social_media_db
+      MYSQL_USER: developer
+      MYSQL_PASSWORD: developer
+    networks:
+      - my_network 
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3310:3306"
+
+volumes:
+  db_data:
+
+networks:
+  my_network:
