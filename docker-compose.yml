@@ -16,7 +16,7 @@ services:
 
   mysql-db:
     image: mysql:8.0
-    container_name: legislation_sys_db
+    container_name: social_media_db
     environment:
       MYSQL_ROOT_PASSWORD: root_password
       MYSQL_DATABASE: social_media_db
