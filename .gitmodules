@@ -1,0 +1,4 @@
+[submodule "social-media-backend"]
+	path = social-media-backend
+	url = https://github.com/kryptt0n/social-media-backend
+	branch = main
