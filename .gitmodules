@@ -2,3 +2,8 @@
 	path = social-media-backend
 	url = https://github.com/kryptt0n/social-media-backend
 	branch = main
+
+[submodule "social-media-frontend"]
+	path = social-media-frontend
+	url = https://github.com/desmondsyu/social-media-frontend.git
+	branch = main
