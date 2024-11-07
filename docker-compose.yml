@@ -2,10 +2,10 @@ services:
   frontend:
     build:
       context: ./social-media-frontend
-      dockerfile: DockerFile
+      dockerfile: Dockerfile
     container_name: social-media-frontend
     ports:
-      - "3100:80"
+      - "3000:80"
     volumes:
       - ./social-media-frontend/src:/var/www/html
       - ./social-media-frontend/.env:/var/www/html/.env
