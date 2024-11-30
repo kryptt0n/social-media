@@ -1,35 +1,56 @@
 version: '3.8'
 services:
+  mysql-db:
+    image: mysql:8.0
+    container_name: social-media-database
+    environment:
+      MYSQL_DATABASE: social_media_db
+      MYSQL_USER: product
+      MYSQL_PASSWORD: product
+      MYSQL_ROOT_PASSWORD: root_password
+    ports:
+      - "3310:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - my_network
+
+  backend:
+    build:
+      context: ./social-media-backend
+      dockerfile: Dockerfile
+    container_name: social-media-backend
+    environment:
+      - DB_CONNECTION=mysql
+      - DB_HOST=mysql-db 
+      - DB_DATABASE=social_media_db 
+      - DB_USERNAME=product 
+      - DB_PASSWORD=product 
+    ports: 
+      - "8080:8080" 
+    networks: 
+      - my_network 
+    depends_on: 
+      - mysql-db
+
   frontend:
     build:
       context: ./social-media-frontend
       dockerfile: Dockerfile
     container_name: social-media-frontend
+    environment:
+      - SHELL=/bin/bash
     ports:
       - "3000:80"
     volumes:
-      - ./social-media-frontend/src:/var/www/html
-      - ./social-media-frontend/.env:/var/www/html/.env
+      - ./social-media-frontend/src:/usr/src/app/src 
+      - ./social-media-frontend/public:/usr/src/app/public 
+      - ./social-media-frontend/.env:/usr/src/app/.env
     networks:
       - my_network
     depends_on:
       - mysql-db
-
-  mysql-db:
-    image: mysql:8.0
-    container_name: social_media_db
-    environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: social_media_db
-      MYSQL_USER: developer
-      MYSQL_PASSWORD: developer
-    networks:
-      - my_network
-    volumes:
-      - db_data:/var/lib/mysql
-    ports:
-      - "3310:3306"
-
+      
 volumes:
   db_data:
 
