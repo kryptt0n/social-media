@@ -42,8 +42,8 @@ CREATE TABLE follow (
     FOREIGN KEY (followed_id) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-DROP TABLE IF EXISTS `like`;
-CREATE TABLE `like` (
+DROP TABLE IF EXISTS `post_like`;
+CREATE TABLE post_like (
     id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     post_id INT NOT NULL,
