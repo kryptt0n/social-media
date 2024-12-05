@@ -1,4 +1,5 @@
-CREATE DATABASE social_media_db;
+-- CREATE DATABASE social_media_db;
+USE social_media_db;
 
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE user (

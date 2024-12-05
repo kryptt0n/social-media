@@ -43,10 +43,6 @@ services:
       - SHELL=/bin/bash
     ports:
       - "3000:80"
-    volumes:
-      - ./social-media-frontend/src:/usr/src/app/src 
-      - ./social-media-frontend/public:/usr/src/app/public 
-      - ./social-media-frontend/.env:/usr/src/app/.env
     networks:
       - my_network
     depends_on:
