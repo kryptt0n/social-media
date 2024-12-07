@@ -4,7 +4,8 @@
 # How to Run
 Clone this root repository and it's submodules.<br>
 Run:<br> 
-git clone --recurse-submodules https://github.com/desmondsyu/social-media.git
+git clone --recurse-submodules https://github.com/desmondsyu/social-media.git<br>
+In the root directory, deploy the whole project in Podman.
 
 # Group Members
 <table>
