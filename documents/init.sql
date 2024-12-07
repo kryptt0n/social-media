@@ -64,6 +64,6 @@ CREATE TABLE notification (
     FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE USER 'j2ee_proj'@'%' IDENTIFIED BY 'J2ee@proj';
-GRANT ALL PRIVILEGES ON social_media_db.* TO 'j2ee_proj'@'%';
+CREATE USER 'product'@'%' IDENTIFIED BY 'product';
+GRANT ALL PRIVILEGES ON social_media_db.* TO 'product'@'%';
 FLUSH PRIVILEGES;
