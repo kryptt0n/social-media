@@ -1,0 +1,56 @@
+name: social-media-app
+services:
+  mysql-db:
+    image: mysql:8.0
+    container_name: social-media-database
+    environment:
+      MYSQL_DATABASE: social_media_db
+      MYSQL_USER: product
+      MYSQL_PASSWORD: product
+      MYSQL_ROOT_PASSWORD: root_password
+    ports:
+      - "3310:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./documents/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - my_network
+
+  backend:
+    build:
+      context: ./social-media-backend
+      dockerfile: Dockerfile
+    container_name: social-media-backend
+    environment:
+      - DB_CONNECTION=mysql
+      - DB_HOST=mysql-db 
+      - DB_DATABASE=social_media_db 
+      - DB_USERNAME=product 
+      - DB_PASSWORD=product
+      - JWT_KEY=14df208c4b57af4bd45911aee6ee696c89f572f3d4e0009689b25748277539467b93034dee8c69187c7ee07262f07d9808aebfde0849da9198cdf538126be4a5
+    ports:
+      - "8080:8080"
+    networks: 
+      - my_network 
+    depends_on: 
+      - mysql-db
+
+  frontend:
+    build:
+      context: ./social-media-frontend
+      dockerfile: Dockerfile
+    container_name: social-media-frontend
+    environment:
+      - SHELL=/bin/bash
+    ports:
+      - "3000:80"
+    networks:
+      - my_network
+    depends_on:
+      - backend
+      
+volumes:
+  db_data:
+
+networks:
+  my_network:
