@@ -1,10 +1,10 @@
+name: social-media
 services:
-  mysql-db:
+  social-media-database:
     image: mysql:8.0
-    container_name: social-media-database
     environment:
-      MYSQL_DATABASE: social_media_db
-      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     restart: always
     ports:
       - "3310:3306"
@@ -14,30 +14,28 @@ services:
     networks:
       - my_network
 
-  backend:
-    build:
-      context: ./social-media-backend
-      dockerfile: Dockerfile
-    container_name: social-media-backend
-    environment:
-      - DB_CONNECTION=mysql
-      - DB_HOST=mysql-db
-      - DB_DATABASE=social_media_db
-      - DB_USERNAME=product
-      - DB_PASSWORD=product
-      - JWT_KEY=14df208c4b57af4bd45911aee6ee696c89f572f3d4e0009689b25748277539467b93034dee8c69187c7ee07262f07d9808aebfde0849da9198cdf538126be4a5
+  social-media-backend:
+    image: openjdk:21-jdk
     ports:
       - "8080:8080"
     networks:
       - my_network
+    volumes:
+      - ./social-media-backend:/app
+    working_dir: /app
+    environment:
+      - DB_DATABASE=${MYSQL_DATABASE}
+      - DB_USERNAME=root
+      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - JWT_KEY=${JWT_KEY}
+    command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
     depends_on:
-      - mysql-db
+      - social-media-database
 
-  frontend:
+  social-media-frontend:
     build:
       context: ./social-media-frontend
       dockerfile: Dockerfile
-    container_name: social-media-frontend
     environment:
       - SHELL=/bin/bash
     ports:
@@ -45,7 +43,7 @@ services:
     networks:
       - my_network
     depends_on:
-      - mysql-db
+      - social-media-database
 
 volumes:
   db_data:
