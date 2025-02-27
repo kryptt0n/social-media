@@ -1,5 +1,4 @@
 
 *.docx
-
+*.env
 .idea
-.env

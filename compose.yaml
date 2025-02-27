@@ -1,0 +1,52 @@
+name: social-media
+services:
+  social-media-database:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    restart: always
+    ports:
+      - "3310:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./documents/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - my_network
+
+  social-media-backend:
+    image: openjdk:21-jdk
+    ports:
+      - "8080:8080"
+    networks:
+      - my_network
+    volumes:
+      - ./social-media-backend:/app
+    working_dir: /app
+    environment:
+      - DB_DATABASE=${MYSQL_DATABASE}
+      - DB_USERNAME=root
+      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - JWT_KEY=${JWT_KEY}
+    command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
+    depends_on:
+      - social-media-database
+
+  social-media-frontend:
+    image: node:22.13.0-alpine3.21
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./social-media-frontend:/app
+    working_dir: /app
+    command: sh -c "npm install && npm run dev"
+    networks:
+      - my_network
+    depends_on:
+      - social-media-backend
+
+volumes:
+  db_data:
+
+networks:
+  my_network:
