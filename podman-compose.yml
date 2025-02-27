@@ -1,13 +1,11 @@
-version: '3.8'
+name: social-media
 services:
-  mysql-db:
+  social-media-database:
     image: mysql:8.0
-    container_name: social-media-database
     environment:
-      MYSQL_DATABASE: social_media_db
-      MYSQL_USER: product
-      MYSQL_PASSWORD: product
-      MYSQL_ROOT_PASSWORD: root_password
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    restart: always
     ports:
       - "3310:3306"
     volumes:
@@ -16,38 +14,38 @@ services:
     networks:
       - my_network
 
-  backend:
-    build:
-      context: ./social-media-backend
-      dockerfile: Dockerfile
-    container_name: social-media-backend
-    environment:
-      - DB_CONNECTION=mysql
-      - DB_HOST=mysql-db 
-      - DB_DATABASE=social_media_db 
-      - DB_USERNAME=product 
-      - DB_PASSWORD=product 
-    ports: 
-      - "8080:8080" 
-    networks: 
-      - my_network 
-    depends_on: 
-      - mysql-db
-
-  frontend:
-    build:
-      context: ./social-media-frontend
-      dockerfile: Dockerfile
-    container_name: social-media-frontend
-    environment:
-      - SHELL=/bin/bash
+  social-media-backend:
+    image: openjdk:21-jdk
     ports:
-      - "3000:80"
+      - "8080:8080"
+    networks:
+      - my_network
+    volumes:
+      - ./social-media-backend:/app
+    working_dir: /app
+    environment:
+      - DB_DATABASE=${MYSQL_DATABASE}
+      - DB_USERNAME=root
+      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - JWT_KEY=${JWT_KEY}
+      - FRONT_END_URL=${FRONT_END_URL}
+    command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
+    depends_on:
+      - social-media-database
+
+  social-media-frontend:
+    image: node:22.13.0-alpine3.21
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./social-media-frontend:/app
+    working_dir: /app
+    command: sh -c "npm install && npm run dev"
     networks:
       - my_network
     depends_on:
-      - mysql-db
-      
+      - social-media-backend
+
 volumes:
   db_data:
 
