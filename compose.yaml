@@ -29,6 +29,8 @@ services:
       - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - JWT_KEY=${JWT_KEY}
       - FRONT_END_URL=${FRONT_END_URL}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
     command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
     depends_on:
       - social-media-database
