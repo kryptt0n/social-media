@@ -14,6 +14,12 @@ In the root repo, create a .env and add the following:
 
 > JWT_KEY=[generated_key] 
 
+> FRONT_END_URL=[url_for_emails] 
+
+> SMTP_USERNAME=[username_from_smtp_server]
+
+> SMTP_PASSWORD=[password_from_smtp_server]
+
 In the root directory, deploy the whole project in Docker.
 
 # File Structure
