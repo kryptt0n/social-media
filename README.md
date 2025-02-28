@@ -21,12 +21,6 @@ SMTP_PASSWORD=[google_app_password]
 
 For more information of SMTP credentials, visit https://support.google.com/accounts/answer/185833
 
-> FRONT_END_URL=[url_for_emails] 
-
-> SMTP_USERNAME=[username_from_smtp_server]
-
-> SMTP_PASSWORD=[password_from_smtp_server]
-
 In the root directory, deploy the whole project in Docker.
 
 # File Structure
