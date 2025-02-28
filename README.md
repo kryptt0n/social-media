@@ -4,15 +4,22 @@ A Social Media Platform built with React and Spring Boot.
 # How to Run
 Clone this root repository and it's submodules by running: 
 
-`git clone --recurse-submodules https://github.com/desmondsyu/social-media.git`
+```
+git clone --recurse-submodules https://github.com/desmondsyu/social-media.git
+```
 
 In the root repo, create a .env and add the following: 
 
-> MYSQL_DATABASE=[your_database_name] 
+```
+MYSQL_DATABASE=[your_database_name] 
+MYSQL_ROOT_PASSWORD=[your_password] 
+JWT_KEY=[generated_key(512)]
+FRONT_END_URL=[front_end_url]
+SMTP_USERNAME=[google_account]
+SMTP_PASSWORD=[google_app_password]
+```
 
-> MYSQL_ROOT_PASSWORD=[your_password] 
-
-> JWT_KEY=[generated_key] 
+For more information of SMTP credentials, visit https://support.google.com/accounts/answer/185833
 
 In the root directory, deploy the whole project in Docker.
 
