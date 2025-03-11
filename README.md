@@ -1,6 +1,13 @@
 # Social Media Project
 A Social Media Platform built with React and Spring Boot.
 
+# 2025-03-11 Update
+- Admin panel
+- Implement JWT
+- Images store as files, replace byte array
+- Add profile management features
+- Password reset, forgot password feature with mail service
+
 # How to Run
 Clone this root repository and it's submodules by running: 
 
