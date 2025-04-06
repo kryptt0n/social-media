@@ -3,13 +3,14 @@ services:
   social-media-database:
     image: mysql:8.0
     environment:
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
+#      - DB_DATABASE=${MYSQL_DATABASE}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     restart: always
     ports:
       - "3310:3306"
     volumes:
       - db_data:/var/lib/mysql
+      - ./mysql-init/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - my_network
 
@@ -46,7 +47,51 @@ services:
       - ./social-media-backend/main-service:/app/main-service
     working_dir: /app/main-service
     environment:
-      - DB_DATABASE=${MYSQL_DATABASE}
+      - DB_DATABASE=main_service
+      - DB_USERNAME=root
+      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - JWT_KEY=${JWT_KEY}
+      - FRONT_END_URL=${FRONT_END_URL}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+    command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
+    depends_on:
+      - consul-server
+      - social-media-database
+
+  ms-os-user-profile:
+    image: openjdk:21-jdk
+    ports:
+      - "8082:8082"
+    networks:
+      - my_network
+    volumes:
+      - ./social-media-backend/ms-os-user-profile:/app/ms-os-user-profile
+    working_dir: /app/ms-os-user-profile
+    environment:
+      - DB_DATABASE=os_user_profile
+      - DB_USERNAME=root
+      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - JWT_KEY=${JWT_KEY}
+      - FRONT_END_URL=${FRONT_END_URL}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+    command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
+    depends_on:
+      - consul-server
+      - social-media-database
+
+  ms-ss-user-profile-crud:
+    image: openjdk:21-jdk
+    ports:
+      - "8083:8083"
+    networks:
+      - my_network
+    volumes:
+      - ./social-media-backend/ms-ss-user-profile-crud:/app/ms-ss-user-profile-crud
+    working_dir: /app/ms-ss-user-profile-crud
+    environment:
+      - DB_DATABASE=os_user_profile_crud
       - DB_USERNAME=root
       - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - JWT_KEY=${JWT_KEY}
