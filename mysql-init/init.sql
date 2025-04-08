@@ -1,3 +1,6 @@
 CREATE DATABASE IF NOT EXISTS main_service;
 CREATE DATABASE IF NOT EXISTS os_user_profile;
 CREATE DATABASE IF NOT EXISTS os_user_profile_crud;
+CREATE DATABASE IF NOT EXISTS os_identity;
+CREATE DATABASE IF NOT EXISTS os_identity_credentials;
+CREATE DATABASE IF NOT EXISTS os_identity_jwt;

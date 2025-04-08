@@ -145,6 +145,73 @@ services:
       - consul-server
       - social-media-database
 
+  ms-os-identity:
+    image: openjdk:21-jdk
+    ports:
+      - "8084:8084"
+    networks:
+      - my_network
+    volumes:
+      - ./social-media-backend/ms-os-identity:/app/ms-os-identity
+    working_dir: /app/ms-os-identity
+    environment:
+      - DB_DATABASE=os_identity
+      - DB_USERNAME=root
+      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - JWT_KEY=${JWT_KEY}
+      - FRONT_END_URL=${FRONT_END_URL}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+    command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
+    depends_on:
+      - consul-server
+      - social-media-database
+
+  ms-ss-credentials:
+    image: openjdk:21-jdk
+    ports:
+      - "8085:8085"
+    networks:
+      - my_network
+    volumes:
+      - ./social-media-backend/ms-ss-credentials:/app/ms-ss-credentials
+    working_dir: /app/ms-ss-credentials
+    environment:
+      - DB_DATABASE=os_identity_credentials
+      - DB_USERNAME=root
+      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - JWT_KEY=${JWT_KEY}
+      - FRONT_END_URL=${FRONT_END_URL}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+    command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
+    depends_on:
+      - consul-server
+      - social-media-database
+
+  ms-ss-jwt:
+    image: openjdk:21-jdk
+    ports:
+      - "8086:8086"
+    networks:
+      - my_network
+    volumes:
+      - ./social-media-backend/ms-ss-jwt:/app/ms-ss-jwt
+    working_dir: /app/ms-ss-jwt
+    environment:
+      - DB_DATABASE=os_identity_jwt
+      - DB_USERNAME=root
+      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - JWT_KEY=${JWT_KEY}
+      - FRONT_END_URL=${FRONT_END_URL}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+    command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
+    depends_on:
+      - consul-server
+      - social-media-database
+
+
   social-media-frontend:
     image: node:22.13.0-alpine3.21
     ports:
