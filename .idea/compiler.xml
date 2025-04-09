@@ -7,24 +7,20 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="ms-os-user-profile" />
-        <module name="ms-ss-user-profile-crud" />
         <module name="socialmedia" />
-        <module name="main-service" />
-      </profile>
-      <profile name="Annotation profile for gateway" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
-        </processorPath>
-        <module name="gateway" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="auth-service" target="17" />
       <module name="config" target="17" />
+      <module name="gateway" target="17" />
+      <module name="main-service" target="17" />
+      <module name="ms-os-user-profile" target="17" />
+      <module name="ms-ss-media-exchange" target="17" />
+      <module name="ms-ss-user-profile-crud" target="17" />
+      <module name="msosidentity" target="21" />
+      <module name="mssscredentials" target="21" />
+      <module name="msssjwt" target="21" />
       <module name="registry" target="17" />
     </bytecodeTargetLevel>
   </component>
@@ -35,7 +31,11 @@
       <module name="gateway" options="-parameters" />
       <module name="main-service" options="-parameters" />
       <module name="ms-os-user-profile" options="-parameters" />
+      <module name="ms-ss-media-exchange" options="-parameters" />
       <module name="ms-ss-user-profile-crud" options="-parameters" />
+      <module name="msosidentity" options="-parameters" />
+      <module name="mssscredentials" options="-parameters" />
+      <module name="msssjwt" options="-parameters" />
       <module name="registry" options="-parameters" />
       <module name="socialmedia" options="-parameters" />
     </option>
