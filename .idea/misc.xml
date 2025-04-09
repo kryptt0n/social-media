@@ -12,6 +12,10 @@
         <option value="$PROJECT_DIR$/social-media-backend/main-service/pom.xml" />
         <option value="$PROJECT_DIR$/social-media-backend/ms-os-user-profile/pom.xml" />
         <option value="$PROJECT_DIR$/social-media-backend/ms-ss-user-profile-crud/pom.xml" />
+        <option value="$PROJECT_DIR$/social-media-backend/ms-os-identity/pom.xml" />
+        <option value="$PROJECT_DIR$/social-media-backend/ms-ss-credentials/pom.xml" />
+        <option value="$PROJECT_DIR$/social-media-backend/ms-ss-jwt/pom.xml" />
+        <option value="$PROJECT_DIR$/social-media-backend/ms-ss-media-exchange/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

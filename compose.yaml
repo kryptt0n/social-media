@@ -58,8 +58,8 @@ services:
     environment:
       - KAFKA_BROKER_ID=1
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
-      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT
       - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
     networks:
@@ -211,6 +211,27 @@ services:
       - consul-server
       - social-media-database
 
+  ms-ss-media-exchange:
+    image: openjdk:21-jdk
+    ports:
+      - "8180:8180"
+    networks:
+      - my_network
+    volumes:
+      - ./social-media-backend/ms-ss-media-exchange:/app/ms-ss-media-exchange
+    working_dir: /app/ms-ss-media-exchange
+    environment:
+      - DB_DATABASE=ss_media_exchange
+      - DB_USERNAME=root
+      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME}
+    command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
+    depends_on:
+      - consul-server
+      - social-media-database
 
   social-media-frontend:
     image: node:22.13.0-alpine3.21

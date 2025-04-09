@@ -4,3 +4,4 @@ CREATE DATABASE IF NOT EXISTS os_user_profile_crud;
 CREATE DATABASE IF NOT EXISTS os_identity;
 CREATE DATABASE IF NOT EXISTS os_identity_credentials;
 CREATE DATABASE IF NOT EXISTS os_identity_jwt;
+CREATE DATABASE IF NOT EXISTS ss_media_exchange;

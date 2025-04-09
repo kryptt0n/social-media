@@ -5,7 +5,11 @@
     <file url="file://$PROJECT_DIR$/social-media-backend/config/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/social-media-backend/gateway/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/social-media-backend/main-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/social-media-backend/ms-os-identity/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/social-media-backend/ms-os-user-profile/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/social-media-backend/ms-ss-credentials/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/social-media-backend/ms-ss-jwt/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/social-media-backend/ms-ss-media-exchange/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/social-media-backend/ms-ss-user-profile-crud/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/social-media-backend/registry/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/social-media-backend/src/main/java" charset="UTF-8" />
