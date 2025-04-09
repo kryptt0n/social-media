@@ -31,6 +31,7 @@
     <bytecodeTargetLevel>
       <module name="auth-service" target="17" />
       <module name="config" target="17" />
+      <module name="ms-ss-post-crud" target="21" />
       <module name="registry" target="17" />
     </bytecodeTargetLevel>
   </component>
@@ -44,6 +45,7 @@
       <module name="ms-ss-comment" options="-parameters" />
       <module name="ms-ss-like" options="-parameters" />
       <module name="ms-ss-media-exchange" options="-parameters" />
+      <module name="ms-ss-post-crud" options="-parameters" />
       <module name="ms-ss-user-profile-crud" options="-parameters" />
       <module name="msosidentity" options="-parameters" />
       <module name="mssscredentials" options="-parameters" />

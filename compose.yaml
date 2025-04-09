@@ -255,10 +255,32 @@ services:
       - consul-server
       - social-media-database
 
+  ms-ss-post-crud:
+    image: openjdk:21-jdk
+    ports:
+      - "8183:8183"
+    networks:
+      - my_network
+    volumes:
+      - ./social-media-backend/ms-ss-post-crud:/app/ms-ss-post-crud
+    working_dir: /app/ms-ss-post-crud
+    environment:
+      - DB_DATABASE=ss_post_crud
+      - DB_USERNAME=root
+      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - JWT_KEY=${JWT_KEY}
+      - FRONT_END_URL=${FRONT_END_URL}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+    command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
+    depends_on:
+      - consul-server
+      - social-media-database
+
   ms-ss-media-exchange:
     image: openjdk:21-jdk
     ports:
-      - "8180:8180"
+      - "8189:8189"
     networks:
       - my_network
     volumes:
