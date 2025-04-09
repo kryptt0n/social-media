@@ -5,7 +5,21 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/social-media-backend/pom.xml" />
+        <option value="$PROJECT_DIR$/social-media-backend/gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/social-media-backend/registry/pom.xml" />
+        <option value="$PROJECT_DIR$/social-media-backend/config/pom.xml" />
+        <option value="$PROJECT_DIR$/social-media-backend/auth-service/pom.xml" />
+        <option value="$PROJECT_DIR$/social-media-backend/main-service/pom.xml" />
+        <option value="$PROJECT_DIR$/social-media-backend/ms-os-user-profile/pom.xml" />
+        <option value="$PROJECT_DIR$/social-media-backend/ms-ss-user-profile-crud/pom.xml" />
       </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/social-media-backend/auth-service/pom.xml" />
+        <option value="$PROJECT_DIR$/social-media-backend/config/pom.xml" />
+        <option value="$PROJECT_DIR$/social-media-backend/registry/pom.xml" />
+      </set>
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_22" default="true" project-jdk-name="22" project-jdk-type="JavaSDK">
