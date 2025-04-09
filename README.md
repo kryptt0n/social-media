@@ -1,6 +1,18 @@
 # Social Media Project
 A Social Media Platform built with React and Spring Boot.
 
+# 2025-04-08 Update
+**All updates are in different branches**
+**Root: d-microservice**
+**Backend: d-ms**
+
+- Build microservice architecture
+- Build Consul
+- Build spring cloud gateway
+- Build Kafka
+- Credential domain
+- Media exchange domain
+
 # 2025-03-11 Update
 - Admin panel
 - Implement JWT
