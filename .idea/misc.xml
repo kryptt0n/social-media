@@ -18,6 +18,7 @@
         <option value="$PROJECT_DIR$/social-media-backend/ms-ss-media-exchange/pom.xml" />
         <option value="$PROJECT_DIR$/social-media-backend/ms-ss-like/pom.xml" />
         <option value="$PROJECT_DIR$/social-media-backend/ms-ss-comment/pom.xml" />
+        <option value="$PROJECT_DIR$/social-media-backend/ms-ss-post-crud/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
