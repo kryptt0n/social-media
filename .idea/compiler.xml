@@ -7,7 +7,25 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="ms-ss-like" />
+        <module name="msosidentity" />
+        <module name="mssscredentials" />
+        <module name="ms-ss-media-exchange" />
+        <module name="ms-os-user-profile" />
+        <module name="ms-ss-user-profile-crud" />
+        <module name="ms-ss-comment" />
         <module name="socialmedia" />
+        <module name="main-service" />
+        <module name="msssjwt" />
+      </profile>
+      <profile name="Annotation profile for gateway" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
+        </processorPath>
+        <module name="gateway" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -23,6 +41,8 @@
       <module name="gateway" options="-parameters" />
       <module name="main-service" options="-parameters" />
       <module name="ms-os-user-profile" options="-parameters" />
+      <module name="ms-ss-comment" options="-parameters" />
+      <module name="ms-ss-like" options="-parameters" />
       <module name="ms-ss-media-exchange" options="-parameters" />
       <module name="ms-ss-user-profile-crud" options="-parameters" />
       <module name="msosidentity" options="-parameters" />

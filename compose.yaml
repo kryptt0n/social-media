@@ -211,6 +211,50 @@ services:
       - consul-server
       - social-media-database
 
+  ms-ss-like:
+    image: openjdk:21-jdk
+    ports:
+      - "8181:8181"
+    networks:
+      - my_network
+    volumes:
+      - ./social-media-backend/ms-ss-like:/app/ms-ss-like
+    working_dir: /app/ms-ss-like
+    environment:
+      - DB_DATABASE=ss_post_like
+      - DB_USERNAME=root
+      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - JWT_KEY=${JWT_KEY}
+      - FRONT_END_URL=${FRONT_END_URL}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+    command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
+    depends_on:
+      - consul-server
+      - social-media-database
+
+  ms-ss-comment:
+    image: openjdk:21-jdk
+    ports:
+      - "8182:8182"
+    networks:
+      - my_network
+    volumes:
+      - ./social-media-backend/ms-ss-comment:/app/ms-ss-comment
+    working_dir: /app/ms-ss-comment
+    environment:
+      - DB_DATABASE=ss_post_comment
+      - DB_USERNAME=root
+      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - JWT_KEY=${JWT_KEY}
+      - FRONT_END_URL=${FRONT_END_URL}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+    command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
+    depends_on:
+      - consul-server
+      - social-media-database
+
   ms-ss-media-exchange:
     image: openjdk:21-jdk
     ports:
