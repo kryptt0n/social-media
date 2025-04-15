@@ -299,6 +299,26 @@ services:
       - consul-server
       - social-media-database
 
+  ms-os-post:
+    image: openjdk:21-jdk
+    ports:
+      - "8290:8290"
+    networks:
+      - my_network
+    volumes:
+      - ./social-media-backend/ms-os-post:/app/ms-os-post
+    working_dir: /app/ms-os-post
+    environment:
+      - JWT_KEY=${JWT_KEY}
+      - FRONT_END_URL=${FRONT_END_URL}
+    command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
+    depends_on:
+      - consul-server
+      - ms-ss-post
+      - ms-ss-like
+      - ms-ss-comment
+      - social-media-database
+
   ms-ss-media-exchange:
     image: openjdk:21-jdk
     ports:
@@ -331,7 +351,6 @@ services:
     command: sh -c "npm install && npm run dev"
     networks:
       - my_network
-
 
 volumes:
   db_data:
