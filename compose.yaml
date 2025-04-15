@@ -280,7 +280,7 @@ services:
   ms-ss-post:
     image: openjdk:21-jdk
     ports:
-      - "8189:8080"
+      - "8184:8184"
     networks:
       - my_network
     volumes:
