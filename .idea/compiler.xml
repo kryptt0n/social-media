@@ -42,10 +42,10 @@
       <module name="gateway" options="-parameters" />
       <module name="main-service" options="-parameters" />
       <module name="ms-os-user-profile" options="-parameters" />
-      <module name="ms-ss-comment" options="-parameters" />
-      <module name="ms-ss-like" options="-parameters" />
-      <module name="ms-ss-media-exchange" options="-parameters" />
-      <module name="ms-ss-post-crud" options="-parameters" />
+      <module name="ms-ss-comment" options="" />
+      <module name="ms-ss-like" options="" />
+      <module name="ms-ss-media-exchange" options="" />
+      <module name="ms-ss-post-crud" options="" />
       <module name="ms-ss-user-profile-crud" options="-parameters" />
       <module name="msosidentity" options="-parameters" />
       <module name="mssscredentials" options="-parameters" />
