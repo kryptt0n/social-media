@@ -38,21 +38,43 @@ services:
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    ports:
+      - "22181:2181"
     environment:
       - ZOOKEEPER_CLIENT_PORT=2181
       - ZOOKEEPER_TICK_TIME=2000
-    ports:
-      - 22181:2181
-    depends_on:
-      - consul-server
+      - ZOOKEEPER_INIT_LIMIT=5
+      - ZOOKEEPER_SYNC_LIMIT=2
+      - ZOOKEEPER_SERVER_ID=1
+      - KAFKA_OPTS=-Dzookeeper.4lw.commands.whitelist=ruok,stat,srvr
     networks:
-      my_network:
+      - my_network
+
+  zookeeper-tester:
+    image: alpine
+    container_name: zookeeper-tester
+    depends_on:
+      - zookeeper
+    networks:
+      - my_network
+    entrypoint: >
+      sh -c "
+      apk add --no-cache netcat-openbsd &&
+      for i in \$(seq 1 10); do
+        echo 'Sending ruok to ZooKeeper...' &&
+        echo ruok | nc zookeeper 2181 | grep imok && echo '✅ ZooKeeper is healthy!' && exit 0;
+        echo '❌ Not ready yet, retrying...';
+        sleep 10;
+      done;
+      echo '❌ ZooKeeper is not responding properly';
+      exit 1
+      "
 
   kafka:
     image: confluentinc/cp-kafka:latest
     depends_on:
       - zookeeper
-      - consul-server
     ports:
       - 29092:29092
     environment:
@@ -62,6 +84,10 @@ services:
       - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT
       - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_MESSAGE_MAX_BYTES=20000000
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=20000000
+      - KAFKA_FETCH_MESSAGE_MAX_BYTES=20000000
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
     networks:
       my_network:
 
@@ -317,6 +343,7 @@ services:
       - ms-ss-post
       - ms-ss-like
       - ms-ss-comment
+      - ms-ss-media-exchange
       - social-media-database
 
   ms-ss-media-exchange:
