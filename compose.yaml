@@ -88,17 +88,60 @@ services:
     networks:
       my_network:
 
+  ms-ss-media-exchange:
+    image: openjdk:21-jdk
+    ports:
+      - "8580:8580"
+    networks:
+      - my_network
+    volumes:
+      - ./social-media-backend/ms-ss-media-exchange:/app/ms-ss-media-exchange
+    working_dir: /app/ms-ss-media-exchange
+    environment:
+      - DB_DATABASE=ss_media_exchange
+      - DB_USERNAME=root
+      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME}
+    command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
+    depends_on:
+      - consul-server
+      - social-media-database
+
   ms-os-user-profile:
     image: openjdk:21-jdk
     ports:
-      - "8082:8082"
+      - "8180:8180"
     networks:
       - my_network
     volumes:
       - ./social-media-backend/ms-os-user-profile:/app/ms-os-user-profile
     working_dir: /app/ms-os-user-profile
     environment:
-      - DB_DATABASE=os_user_profile
+      - JWT_KEY=${JWT_KEY}
+      - FRONT_END_URL=${FRONT_END_URL}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+    command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
+    depends_on:
+      - consul-server
+      - ms-ss-user-profile-crud
+      - ms-ss-media-exchange
+      - ms-ss-follow
+
+  ms-ss-user-profile-crud:
+    image: openjdk:21-jdk
+    ports:
+      - "8181:8181"
+    networks:
+      - my_network
+    volumes:
+      - ./social-media-backend/ms-ss-user-profile-crud:/app/ms-ss-user-profile-crud
+    working_dir: /app/ms-ss-user-profile-crud
+    environment:
+      - DB_DATABASE=ss_user_profile_crud
       - DB_USERNAME=root
       - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - JWT_KEY=${JWT_KEY}
@@ -109,20 +152,18 @@ services:
     depends_on:
       - consul-server
       - social-media-database
-      - ms-ss-user-profile-crud
-      - ms-ss-media-exchange
 
-  ms-ss-user-profile-crud:
+  ms-ss-follow:
     image: openjdk:21-jdk
     ports:
-      - "8083:8083"
+      - "8182:8182"
     networks:
       - my_network
     volumes:
-      - ./social-media-backend/ms-ss-user-profile-crud:/app/ms-ss-user-profile-crud
-    working_dir: /app/ms-ss-user-profile-crud
+      - ./social-media-backend/ms-ss-follow:/app/ms-ss-follow
+    working_dir: /app/ms-ss-follow
     environment:
-      - DB_DATABASE=os_user_profile_crud
+      - DB_DATABASE=ss_user_follow
       - DB_USERNAME=root
       - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - JWT_KEY=${JWT_KEY}
@@ -137,16 +178,13 @@ services:
   ms-os-identity:
     image: openjdk:21-jdk
     ports:
-      - "8084:8084"
+      - "8280:8280"
     networks:
       - my_network
     volumes:
       - ./social-media-backend/ms-os-identity:/app/ms-os-identity
     working_dir: /app/ms-os-identity
     environment:
-      - DB_DATABASE=os_identity
-      - DB_USERNAME=root
-      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - JWT_KEY=${JWT_KEY}
       - FRONT_END_URL=${FRONT_END_URL}
       - SMTP_USERNAME=${SMTP_USERNAME}
@@ -154,14 +192,13 @@ services:
     command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
     depends_on:
       - consul-server
-      - social-media-database
       - ms-ss-credentials
       - ms-ss-jwt
 
   ms-ss-credentials:
     image: openjdk:21-jdk
     ports:
-      - "8085:8085"
+      - "8281:8281"
     networks:
       - my_network
     volumes:
@@ -183,14 +220,14 @@ services:
   ms-ss-jwt:
     image: openjdk:21-jdk
     ports:
-      - "8086:8086"
+      - "8282:8282"
     networks:
       - my_network
     volumes:
       - ./social-media-backend/ms-ss-jwt:/app/ms-ss-jwt
     working_dir: /app/ms-ss-jwt
     environment:
-      - DB_DATABASE=os_identity_jwt
+      - DB_DATABASE=ss_identity_jwt
       - DB_USERNAME=root
       - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - JWT_KEY=${JWT_KEY}
@@ -202,10 +239,30 @@ services:
       - consul-server
       - social-media-database
 
+  ms-os-post:
+    image: openjdk:21-jdk
+    ports:
+      - "8380:8380"
+    networks:
+      - my_network
+    volumes:
+      - ./social-media-backend/ms-os-post:/app/ms-os-post
+    working_dir: /app/ms-os-post
+    environment:
+      - JWT_KEY=${JWT_KEY}
+      - FRONT_END_URL=${FRONT_END_URL}
+    command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
+    depends_on:
+      - consul-server
+      - ms-ss-post
+      - ms-ss-like
+      - ms-ss-comment
+      - ms-ss-media-exchange
+
   ms-ss-like:
     image: openjdk:21-jdk
     ports:
-      - "8181:8181"
+      - "8381:8381"
     networks:
       - my_network
     volumes:
@@ -227,7 +284,7 @@ services:
   ms-ss-comment:
     image: openjdk:21-jdk
     ports:
-      - "8182:8182"
+      - "8382:8382"
     networks:
       - my_network
     volumes:
@@ -249,7 +306,7 @@ services:
   ms-ss-post:
     image: openjdk:21-jdk
     ports:
-      - "8184:8184"
+      - "8384:8384"
     networks:
       - my_network
     volumes:
@@ -268,48 +325,23 @@ services:
       - consul-server
       - social-media-database
 
-  ms-os-post:
+  ms-os-admin:
     image: openjdk:21-jdk
     ports:
-      - "8290:8290"
+      - "8680:8680"
     networks:
       - my_network
     volumes:
-      - ./social-media-backend/ms-os-post:/app/ms-os-post
-    working_dir: /app/ms-os-post
+      - ./social-media-backend/ms-os-admin:/app/ms-os-admin
+    working_dir: /app/ms-os-admin
     environment:
       - JWT_KEY=${JWT_KEY}
       - FRONT_END_URL=${FRONT_END_URL}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
     command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
     depends_on:
       - consul-server
-      - ms-ss-post
-      - ms-ss-like
-      - ms-ss-comment
-      - ms-ss-media-exchange
-      - social-media-database
-
-  ms-ss-media-exchange:
-    image: openjdk:21-jdk
-    ports:
-      - "8189:8189"
-    networks:
-      - my_network
-    volumes:
-      - ./social-media-backend/ms-ss-media-exchange:/app/ms-ss-media-exchange
-    working_dir: /app/ms-ss-media-exchange
-    environment:
-      - DB_DATABASE=ss_media_exchange
-      - DB_USERNAME=root
-      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - AWS_REGION=${AWS_REGION}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME}
-    command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
-    depends_on:
-      - consul-server
-      - social-media-database
 
   social-media-frontend:
     image: node:22.13.0-alpine3.21
