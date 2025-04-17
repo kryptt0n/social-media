@@ -205,7 +205,7 @@ services:
       - ./social-media-backend/ms-ss-credentials:/app/ms-ss-credentials
     working_dir: /app/ms-ss-credentials
     environment:
-      - DB_DATABASE=os_identity_credentials
+      - DB_DATABASE=ss_identity_credentials
       - DB_USERNAME=root
       - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - JWT_KEY=${JWT_KEY}
