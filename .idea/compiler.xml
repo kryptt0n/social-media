@@ -7,17 +7,20 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="mssscredentials" />
+        <module name="ms-os-user-profile" />
+        <module name="socialmedia" />
+        <module name="ms-ss-credentials" />
+        <module name="main-service" />
+        <module name="ms-ss-jwt" />
+        <module name="msssjwt" />
         <module name="ms-ss-like" />
         <module name="msosidentity" />
-        <module name="mssscredentials" />
-        <module name="ms-ss-post-crud" />
+        <module name="ms-ss-post" />
         <module name="ms-ss-media-exchange" />
-        <module name="ms-os-user-profile" />
         <module name="ms-ss-user-profile-crud" />
         <module name="ms-ss-comment" />
-        <module name="socialmedia" />
-        <module name="main-service" />
-        <module name="msssjwt" />
+        <module name="ms-os-identity" />
       </profile>
       <profile name="Annotation profile for gateway" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -25,13 +28,26 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
         </processorPath>
         <module name="gateway" />
+      </profile>
+      <profile name="Annotation profile for ms-os-admin" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
+        </processorPath>
+        <module name="ms-ss-follow" />
+        <module name="ms-os-admin" />
+        <module name="ms-os-post" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="auth-service" target="17" />
       <module name="config" target="17" />
+      <module name="ms-ss-post-crud" target="21" />
       <module name="registry" target="17" />
     </bytecodeTargetLevel>
   </component>
@@ -41,11 +57,18 @@
       <module name="config" options="-parameters" />
       <module name="gateway" options="-parameters" />
       <module name="main-service" options="-parameters" />
+      <module name="ms-os-admin" options="-parameters" />
+      <module name="ms-os-identity" options="-parameters" />
+      <module name="ms-os-post" options="-parameters" />
       <module name="ms-os-user-profile" options="-parameters" />
-      <module name="ms-ss-comment" options="" />
-      <module name="ms-ss-like" options="" />
-      <module name="ms-ss-media-exchange" options="" />
-      <module name="ms-ss-post-crud" options="" />
+      <module name="ms-ss-comment" options="-parameters" />
+      <module name="ms-ss-credentials" options="-parameters" />
+      <module name="ms-ss-follow" options="-parameters" />
+      <module name="ms-ss-jwt" options="-parameters" />
+      <module name="ms-ss-like" options="-parameters" />
+      <module name="ms-ss-media-exchange" options="-parameters" />
+      <module name="ms-ss-post" options="-parameters" />
+      <module name="ms-ss-post-crud" options="-parameters" />
       <module name="ms-ss-user-profile-crud" options="-parameters" />
       <module name="msosidentity" options="-parameters" />
       <module name="mssscredentials" options="-parameters" />

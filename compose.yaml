@@ -50,31 +50,15 @@ services:
       - KAFKA_OPTS=-Dzookeeper.4lw.commands.whitelist=ruok,stat,srvr
     networks:
       - my_network
-
-  zookeeper-tester:
-    image: alpine
-    container_name: zookeeper-tester
     depends_on:
-      - zookeeper
-    networks:
-      - my_network
-    entrypoint: >
-      sh -c "
-      apk add --no-cache netcat-openbsd &&
-      for i in \$(seq 1 10); do
-        echo 'Sending ruok to ZooKeeper...' &&
-        echo ruok | nc zookeeper 2181 | grep imok && echo '✅ ZooKeeper is healthy!' && exit 0;
-        echo '❌ Not ready yet, retrying...';
-        sleep 10;
-      done;
-      echo '❌ ZooKeeper is not responding properly';
-      exit 1
-      "
+      - gateway
+      - consul-server
 
   kafka:
     image: confluentinc/cp-kafka:latest
     depends_on:
       - zookeeper
+      - consul-server
     ports:
       - 29092:29092
     environment:
@@ -95,7 +79,6 @@ services:
     image: provectuslabs/kafka-ui:latest
     depends_on:
       - kafka
-      - consul-server
     ports:
       - 8090:8080
     environment:
@@ -104,28 +87,6 @@ services:
       - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
     networks:
       my_network:
-
-  main-service:
-    image: openjdk:21-jdk
-    ports:
-      - "8081:8081"
-    networks:
-      - my_network
-    volumes:
-      - ./social-media-backend/main-service:/app/main-service
-    working_dir: /app/main-service
-    environment:
-      - DB_DATABASE=main_service
-      - DB_USERNAME=root
-      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - JWT_KEY=${JWT_KEY}
-      - FRONT_END_URL=${FRONT_END_URL}
-      - SMTP_USERNAME=${SMTP_USERNAME}
-      - SMTP_PASSWORD=${SMTP_PASSWORD}
-    command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
-    depends_on:
-      - consul-server
-      - social-media-database
 
   ms-os-user-profile:
     image: openjdk:21-jdk
@@ -148,6 +109,8 @@ services:
     depends_on:
       - consul-server
       - social-media-database
+      - ms-ss-user-profile-crud
+      - ms-ss-media-exchange
 
   ms-ss-user-profile-crud:
     image: openjdk:21-jdk
@@ -192,6 +155,8 @@ services:
     depends_on:
       - consul-server
       - social-media-database
+      - ms-ss-credentials
+      - ms-ss-jwt
 
   ms-ss-credentials:
     image: openjdk:21-jdk
@@ -270,28 +235,6 @@ services:
     working_dir: /app/ms-ss-comment
     environment:
       - DB_DATABASE=ss_post_comment
-      - DB_USERNAME=root
-      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - JWT_KEY=${JWT_KEY}
-      - FRONT_END_URL=${FRONT_END_URL}
-      - SMTP_USERNAME=${SMTP_USERNAME}
-      - SMTP_PASSWORD=${SMTP_PASSWORD}
-    command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
-    depends_on:
-      - consul-server
-      - social-media-database
-
-  ms-ss-post-crud:
-    image: openjdk:21-jdk
-    ports:
-      - "8183:8183"
-    networks:
-      - my_network
-    volumes:
-      - ./social-media-backend/ms-ss-post-crud:/app/ms-ss-post-crud
-    working_dir: /app/ms-ss-post-crud
-    environment:
-      - DB_DATABASE=ss_post_crud
       - DB_USERNAME=root
       - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - JWT_KEY=${JWT_KEY}
