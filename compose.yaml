@@ -348,8 +348,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./social-media-frontend:/app
-    working_dir: /app
+      - ./social-media-frontend:/app/social-media-frontend
+    working_dir: /app/social-media-frontend
     command: sh -c "npm install && npm run dev"
     networks:
       - my_network

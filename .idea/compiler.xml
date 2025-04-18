@@ -22,7 +22,7 @@
         <module name="ms-ss-comment" />
         <module name="ms-os-identity" />
       </profile>
-      <profile name="Annotation profile for ms-ss-follow" enabled="true">
+      <profile name="Annotation profile for ms-os-admin" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
