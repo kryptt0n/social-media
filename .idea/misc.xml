@@ -29,6 +29,7 @@
       <set>
         <option value="$PROJECT_DIR$/social-media-backend/auth-service/pom.xml" />
         <option value="$PROJECT_DIR$/social-media-backend/config/pom.xml" />
+        <option value="$PROJECT_DIR$/social-media-backend/main-service/pom.xml" />
         <option value="$PROJECT_DIR$/social-media-backend/ms-ss-post-crud/pom.xml" />
         <option value="$PROJECT_DIR$/social-media-backend/registry/pom.xml" />
       </set>
