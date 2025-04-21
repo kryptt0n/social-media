@@ -1,20 +1,21 @@
 # Social Media Project
 Social Media Project is a Twitter-like application designed to showcase the Microservice Architecture Pattern. It leverages technologies such as Spring Boot, Spring Cloud, Kafka, Consul, MySQL, React, and AWS S3.
 
-The entire project is fully dockerized for seamless deployment. While image storage is integrated with AWS S3, the application can still run without it.
+The entire project is fully dockerized for seamless deployment.
 
 # Content
 - [How to Run](#how-to-run)
 - [Project Structure](#project-structure)
-- - [Container](#container)
-- - [Client](#client)
-- - [Registry](#registry)
-- - [Gateway](#gateway)
-- - [Domains](#domains)
-- - [Streaming](#streaming)
-- - [Database](#database)
-- - [Object Storage](#object-storage)
-- - [Mailing](#mailing)
+  - [Container](#container)
+  - [Client](#client)
+  - [Registry](#registry)
+  - [Gateway](#gateway)
+  - [Domains](#domains)
+  - [Streaming](#streaming)
+  - [Database](#database)
+  - [Object Storage](#object-storage)
+  - [Mailing](#mailing)
+- [Contributors](#contributors)
 
 # How to Run
 Clone this root repository and it's submodules by running: 
@@ -47,7 +48,7 @@ docker compose up -d
 
 To remove all container including volumes, run
 ```bash
-docker compose dowm -v
+docker compose down -v
 ```
 There should be 19 containers running including
 - 1 Database
