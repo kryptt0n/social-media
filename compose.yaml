@@ -119,11 +119,6 @@ services:
     volumes:
       - ./social-media-backend/ms-os-user-profile:/app/ms-os-user-profile
     working_dir: /app/ms-os-user-profile
-    environment:
-      - JWT_KEY=${JWT_KEY}
-      - FRONT_END_URL=${FRONT_END_URL}
-      - SMTP_USERNAME=${SMTP_USERNAME}
-      - SMTP_PASSWORD=${SMTP_PASSWORD}
     command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
     depends_on:
       - consul-server
@@ -144,10 +139,6 @@ services:
       - DB_DATABASE=ss_user_profile_crud
       - DB_USERNAME=root
       - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - JWT_KEY=${JWT_KEY}
-      - FRONT_END_URL=${FRONT_END_URL}
-      - SMTP_USERNAME=${SMTP_USERNAME}
-      - SMTP_PASSWORD=${SMTP_PASSWORD}
     command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
     depends_on:
       - consul-server
@@ -166,10 +157,6 @@ services:
       - DB_DATABASE=ss_user_follow
       - DB_USERNAME=root
       - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - JWT_KEY=${JWT_KEY}
-      - FRONT_END_URL=${FRONT_END_URL}
-      - SMTP_USERNAME=${SMTP_USERNAME}
-      - SMTP_PASSWORD=${SMTP_PASSWORD}
     command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
     depends_on:
       - consul-server
@@ -184,11 +171,6 @@ services:
     volumes:
       - ./social-media-backend/ms-os-identity:/app/ms-os-identity
     working_dir: /app/ms-os-identity
-    environment:
-      - JWT_KEY=${JWT_KEY}
-      - FRONT_END_URL=${FRONT_END_URL}
-      - SMTP_USERNAME=${SMTP_USERNAME}
-      - SMTP_PASSWORD=${SMTP_PASSWORD}
     command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
     depends_on:
       - consul-server
@@ -231,9 +213,6 @@ services:
       - DB_USERNAME=root
       - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - JWT_KEY=${JWT_KEY}
-      - FRONT_END_URL=${FRONT_END_URL}
-      - SMTP_USERNAME=${SMTP_USERNAME}
-      - SMTP_PASSWORD=${SMTP_PASSWORD}
     command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
     depends_on:
       - consul-server
@@ -248,9 +227,6 @@ services:
     volumes:
       - ./social-media-backend/ms-os-post:/app/ms-os-post
     working_dir: /app/ms-os-post
-    environment:
-      - JWT_KEY=${JWT_KEY}
-      - FRONT_END_URL=${FRONT_END_URL}
     command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
     depends_on:
       - consul-server
@@ -272,10 +248,6 @@ services:
       - DB_DATABASE=ss_post_like
       - DB_USERNAME=root
       - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - JWT_KEY=${JWT_KEY}
-      - FRONT_END_URL=${FRONT_END_URL}
-      - SMTP_USERNAME=${SMTP_USERNAME}
-      - SMTP_PASSWORD=${SMTP_PASSWORD}
     command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
     depends_on:
       - consul-server
@@ -294,10 +266,6 @@ services:
       - DB_DATABASE=ss_post_comment
       - DB_USERNAME=root
       - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - JWT_KEY=${JWT_KEY}
-      - FRONT_END_URL=${FRONT_END_URL}
-      - SMTP_USERNAME=${SMTP_USERNAME}
-      - SMTP_PASSWORD=${SMTP_PASSWORD}
     command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
     depends_on:
       - consul-server
@@ -316,10 +284,6 @@ services:
       - DB_DATABASE=ss_post_crud
       - DB_USERNAME=root
       - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - JWT_KEY=${JWT_KEY}
-      - FRONT_END_URL=${FRONT_END_URL}
-      - SMTP_USERNAME=${SMTP_USERNAME}
-      - SMTP_PASSWORD=${SMTP_PASSWORD}
     command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
     depends_on:
       - consul-server
@@ -334,11 +298,6 @@ services:
     volumes:
       - ./social-media-backend/ms-os-admin:/app/ms-os-admin
     working_dir: /app/ms-os-admin
-    environment:
-      - JWT_KEY=${JWT_KEY}
-      - FRONT_END_URL=${FRONT_END_URL}
-      - SMTP_USERNAME=${SMTP_USERNAME}
-      - SMTP_PASSWORD=${SMTP_PASSWORD}
     command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
     depends_on:
       - consul-server
