@@ -36,24 +36,6 @@ services:
     depends_on:
       - consul-server
 
-  zookeeper:
-    image: confluentinc/cp-zookeeper:latest
-    container_name: zookeeper
-    ports:
-      - "22181:2181"
-    environment:
-      - ZOOKEEPER_CLIENT_PORT=2181
-      - ZOOKEEPER_TICK_TIME=2000
-      - ZOOKEEPER_INIT_LIMIT=5
-      - ZOOKEEPER_SYNC_LIMIT=2
-      - ZOOKEEPER_SERVER_ID=1
-      - KAFKA_OPTS=-Dzookeeper.4lw.commands.whitelist=ruok,stat,srvr
-    networks:
-      - my_network
-    depends_on:
-      - gateway
-      - consul-server
-
   kafka:
     image: confluentinc/cp-kafka:latest
     depends_on:
