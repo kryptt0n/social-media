@@ -22,13 +22,13 @@ The entire project is fully dockerized for seamless deployment.
 
 # How to Run
 
-Clone this root repository and it's submodules by running:
+Clone this root repository:
 
 ```
-git clone --recurse-submodules https://github.com/desmondsyu/social-media.git
+git clone  https://github.com/desmondsyu/social-media.git
 ```
 
-In the root repo (social-media), create a .env and add the following:
+In the root (/social-media), create a .env and add the following:
 
 ```env
 MYSQL_DATABASE=[your_database_name] 
