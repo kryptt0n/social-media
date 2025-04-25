@@ -9,17 +9,13 @@
         <outputRelativeToContentRoot value="true" />
         <module name="mssscredentials" />
         <module name="ms-os-user-profile" />
-        <module name="socialmedia" />
-        <module name="ms-ss-credentials" />
-        <module name="ms-ss-jwt" />
         <module name="msssjwt" />
         <module name="ms-ss-like" />
         <module name="msosidentity" />
         <module name="ms-ss-post" />
         <module name="ms-ss-media-exchange" />
-        <module name="ms-ss-user-profile-crud" />
         <module name="ms-ss-comment" />
-        <module name="ms-os-identity" />
+        <module name="ms-ss-user-profile-crud" />
       </profile>
       <profile name="Annotation profile for ms-ss-follow" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -38,8 +34,12 @@
       <module name="auth-service" target="17" />
       <module name="config" target="17" />
       <module name="main-service" target="17" />
+      <module name="ms-os-identity" target="21" />
+      <module name="ms-ss-credentials" target="21" />
+      <module name="ms-ss-jwt" target="21" />
       <module name="ms-ss-post-crud" target="21" />
       <module name="registry" target="17" />
+      <module name="socialmedia" target="21" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
