@@ -157,10 +157,10 @@ and uses secure application credentials.
 
 # Contributors
 
-| Name             | 
-|------------------|
-| Marina Carvalho  | 
-| Vitaly Sukhinin  | 
-| Desmond Zhu      | 
-| Samruddhi Chavan |
-| Sruthi Pandiath  |
+| Role        | Name             |
+|-------------|------------------|
+| Team Leader | Vitaly Sukhinin  |
+| Member      | Marina Carvalho  |
+| Member      | Desmond Zhu      |
+| Member      | Samruddhi Chavan |
+| Member      | Sruthi Pandiath  |
