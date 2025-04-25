@@ -25,7 +25,7 @@ The entire project is fully dockerized for seamless deployment.
 Clone this root repository:
 
 ```
-git clone  https://github.com/desmondsyu/social-media.git
+git clone --recurse-submodules https://github.com/kryptt0n/social-media.git
 ```
 
 In the root (/social-media), create a .env and add the following:
