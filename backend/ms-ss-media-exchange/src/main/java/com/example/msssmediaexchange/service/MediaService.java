@@ -54,11 +54,13 @@ public class MediaService {
 //        mediaRepository.save(media);
 //    }
 
-    @KafkaListener(topics = "${kafka.topic.media}", groupId = "${spring.kafka.consumer.group-id}")
+    @KafkaListener(topics = "${kafka.topic.media}", groupId = "image")
     public void processMedia(MediaPayload payload) {
         if (payload.getBase64Image() == null || payload.getBase64Image().isEmpty()) {
             return;
         }
+
+        System.out.println("Received media: " + payload.getBase64Image());
 
         byte[] imageData = Base64.getDecoder().decode(payload.getBase64Image());
         String sourceId = payload.getSourceId();

@@ -7,15 +7,15 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="mssscredentials" />
-        <module name="ms-os-user-profile" />
-        <module name="msssjwt" />
         <module name="ms-ss-like" />
+        <module name="mssscredentials" />
         <module name="msosidentity" />
         <module name="ms-ss-post" />
         <module name="ms-ss-media-exchange" />
+        <module name="ms-os-user-profile" />
         <module name="ms-ss-comment" />
         <module name="ms-ss-user-profile-crud" />
+        <module name="msssjwt" />
       </profile>
       <profile name="Annotation profile for ms-ss-follow" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
