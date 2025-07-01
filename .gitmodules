@@ -1,0 +1,6 @@
+[submodule "social-media-backend"]
+	path = social-media-backend
+	url = https://github.com/kryptt0n/social-media-backend
+[submodule "social-media-frontend"]
+	path = social-media-frontend
+	url = https://github.com/kryptt0n/social-media-frontend
