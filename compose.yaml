@@ -1,6 +1,34 @@
 name: social-media
 services:
 
+  minio:
+    image: minio/minio
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"  # S3 API
+      - "9001:9001"  # Web console
+    environment:
+      MINIO_ROOT_USER: ${S3_ROOT_USERNAME}
+      MINIO_ROOT_PASSWORD: ${S3_ROOT_PASSWORD}
+    volumes:
+      - ./minio-data:/data
+    networks:
+      - my_network
+
+  social-media-database:
+      image: mysql:8.0
+      environment:
+        - MYSQL_ROOT_USERNAME=${MYSQL_ROOT_USERNAME}
+        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      restart: always
+      ports:
+        - "3310:3306"
+      volumes:
+        - db_data:/var/lib/mysql
+        - ./mysql-init/init.sql:/docker-entrypoint-initdb.d/init.sql
+      networks:
+        - my_network
+
   consul-server:
     image: hashicorp/consul
     container_name: consul-server
@@ -69,17 +97,20 @@ services:
       - ./social-media-backend/ms-ss-media-exchange:/app/ms-ss-media-exchange
     working_dir: /app/ms-ss-media-exchange
     environment:
-      - DB_DATABASE=sn_ss_media_exchange
+      - DB_DATABASE=ss_media_exchange
       - DB_HOST=${DB_HOST}
       - DB_USERNAME=${MYSQL_ROOT_USERNAME}
       - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - AWS_REGION=${AWS_REGION}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME}
+      - S3_REGION=${S3_REGION}
+      - S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID}
+      - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY}
+      - S3_BUCKET_NAME=${S3_BUCKET_NAME}
+      - S3_INTERNAL_ENDPOINT=${S3_INTERNAL_ENDPOINT}
+      - S3_PUBLIC_ENDPOINT=${S3_PUBLIC_ENDPOINT}
     command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
     depends_on:
       - consul-server
+      - social-media-database
 
   ms-os-user-profile:
     image: openjdk:21-jdk
@@ -107,13 +138,14 @@ services:
       - ./social-media-backend/ms-ss-user-profile-crud:/app/ms-ss-user-profile-crud
     working_dir: /app/ms-ss-user-profile-crud
     environment:
-      - DB_DATABASE=sn_ss_user_profile_crud
+      - DB_DATABASE=ss_user_profile_crud
       - DB_HOST=${DB_HOST}
       - DB_USERNAME=${MYSQL_ROOT_USERNAME}
       - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
     command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
     depends_on:
       - consul-server
+      - social-media-database
 
   ms-ss-follow:
     image: openjdk:21-jdk
@@ -125,13 +157,14 @@ services:
       - ./social-media-backend/ms-ss-follow:/app/ms-ss-follow
     working_dir: /app/ms-ss-follow
     environment:
-      - DB_DATABASE=sn_ss_user_follow
+      - DB_DATABASE=ss_user_follow
       - DB_HOST=${DB_HOST}
       - DB_USERNAME=${MYSQL_ROOT_USERNAME}
       - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
     command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
     depends_on:
       - consul-server
+      - social-media-database
 
   ms-os-identity:
     image: openjdk:21-jdk
@@ -158,7 +191,7 @@ services:
       - ./social-media-backend/ms-ss-credentials:/app/ms-ss-credentials
     working_dir: /app/ms-ss-credentials
     environment:
-      - DB_DATABASE=sn_ss_identity_credentials
+      - DB_DATABASE=ss_identity_credentials
       - DB_HOST=${DB_HOST}
       - DB_USERNAME=${MYSQL_ROOT_USERNAME}
       - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
@@ -169,6 +202,7 @@ services:
     command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
     depends_on:
       - consul-server
+      - social-media-database
 
   ms-ss-jwt:
     image: openjdk:21-jdk
@@ -180,7 +214,7 @@ services:
       - ./social-media-backend/ms-ss-jwt:/app/ms-ss-jwt
     working_dir: /app/ms-ss-jwt
     environment:
-      - DB_DATABASE=sn_ss_identity_jwt
+      - DB_DATABASE=ss_identity_jwt
       - DB_HOST=${DB_HOST}
       - DB_USERNAME=${MYSQL_ROOT_USERNAME}
       - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
@@ -188,6 +222,7 @@ services:
     command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
     depends_on:
       - consul-server
+      - social-media-database
 
   ms-os-post:
     image: openjdk:21-jdk
@@ -216,13 +251,14 @@ services:
       - ./social-media-backend/ms-ss-like:/app/ms-ss-like
     working_dir: /app/ms-ss-like
     environment:
-      - DB_DATABASE=sn_ss_post_like
+      - DB_DATABASE=ss_post_like
       - DB_HOST=${DB_HOST}
       - DB_USERNAME=${MYSQL_ROOT_USERNAME}
       - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
     command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
     depends_on:
       - consul-server
+      - social-media-database
 
   ms-ss-comment:
     image: openjdk:21-jdk
@@ -234,13 +270,14 @@ services:
       - ./social-media-backend/ms-ss-comment:/app/ms-ss-comment
     working_dir: /app/ms-ss-comment
     environment:
-      - DB_DATABASE=sn_ss_post_comment
+      - DB_DATABASE=ss_post_comment
       - DB_HOST=${DB_HOST}
       - DB_USERNAME=${MYSQL_ROOT_USERNAME}
       - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
     command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
     depends_on:
       - consul-server
+      - social-media-database
 
   ms-ss-post:
     image: openjdk:21-jdk
@@ -252,13 +289,14 @@ services:
       - ./social-media-backend/ms-ss-post:/app/ms-ss-post
     working_dir: /app/ms-ss-post
     environment:
-      - DB_DATABASE=sn_ss_post_crud
+      - DB_DATABASE=ss_post_crud
       - DB_HOST=${DB_HOST}
       - DB_USERNAME=${MYSQL_ROOT_USERNAME}
       - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
     command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
     depends_on:
       - consul-server
+      - social-media-database
 
   ms-os-admin:
     image: openjdk:21-jdk
