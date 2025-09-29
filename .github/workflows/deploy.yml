@@ -1,0 +1,109 @@
+name: Deploy (self-hosted)
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      services: ${{ steps.calc.outputs.services }}
+      restart_all: ${{ steps.calc.outputs.restart_all }}
+    steps:
+      - name: Checkout repo (with history + submodules)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Install yq (for compose parsing)
+        run: |
+          sudo curl -L https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 \
+            -o /usr/local/bin/yq && sudo chmod +x /usr/local/bin/yq
+
+      - name: Calculate changed services (name-agnostic)
+        id: calc
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER:  ${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          # Resolve compose file
+          COMPOSE_FILE="$(ls -1 docker-compose.yml compose.yml compose.yaml 2>/dev/null | head -n1 || true)"
+          [ -z "${COMPOSE_FILE:-}" ] && echo "No compose file found" && exit 1
+
+          # Ensure BEFORE is usable (handle null SHA)
+          if [ -z "${BEFORE:-}" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            BEFORE="$(git rev-parse HEAD~1 2>/dev/null || echo "$AFTER")"
+          fi
+
+          # Compute changed files
+          CHANGED_FILES="$(git diff --name-only "$BEFORE" "$AFTER" || true)"
+
+          # If compose/.env/workflows changed → full refresh
+          if echo "$CHANGED_FILES" | grep -Eiq '(^|/)(docker-compose|compose)\.(yml|yaml)$|(^|/)\.env$|^\.github/workflows/'; then
+            echo "restart_all=true" >> "$GITHUB_OUTPUT"
+            echo "services=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Parse service names from compose
+          mapfile -t EXISTING < <(yq -r '.services | keys[]' "$COMPOSE_FILE" | sort -u)
+
+          # Build candidates from path prefixes
+          mapfile -t CANDIDATES < <(printf '%s\n' "$CHANGED_FILES" | awk -F/ '
+            $1=="social-media-frontend" {print "frontend"}
+            $1=="social-media-backend" && NF>=2 {print $2}
+          ' | sort -u)
+
+          # Keep only candidates that exist in compose
+          SERVICES=""
+          for s in "${CANDIDATES[@]:-}"; do
+            if printf '%s\n' "${EXISTING[@]}" | grep -qx "$s"; then
+              SERVICES="$SERVICES $s"
+            fi
+          done
+          SERVICES="$(echo "$SERVICES" | xargs || true)"
+
+          echo "services=$SERVICES"   >> "$GITHUB_OUTPUT"
+          echo "restart_all=false"    >> "$GITHUB_OUTPUT"
+
+  deploy:
+    runs-on: self-hosted
+    needs: detect-changes
+    env:
+      APP_DIR: /home/vityzy/social-media
+    steps:
+      - name: Pull latest code into server clone (keeps server-side .env)
+        run: |
+          set -euo pipefail
+          cd "$APP_DIR"
+          git fetch --all
+          git reset --hard origin/main
+          git submodule sync --recursive
+          git submodule update --init --recursive --remote
+
+      - name: Restart with Docker Compose (auto-loads .env beside compose)
+        run: |
+          set -euo pipefail
+          cd "$APP_DIR"
+
+          if [ "${{ needs.detect-changes.outputs.restart_all }}" = "true" ]; then
+            echo "Compose/.env changed → full refresh"
+            docker compose up -d
+            exit 0
+          fi
+
+          if [ -z "${{ needs.detect-changes.outputs.services }}" ]; then
+            echo "No specific service matched → safe refresh all"
+            docker compose up -d
+          else
+            echo "Restarting changed services: ${{ needs.detect-changes.outputs.services }}"
+            docker compose up -d --no-deps ${{ needs.detect-changes.outputs.services }}
+          fi
+
+      - name: Cleanup
+        run: docker image prune -f || true
+
