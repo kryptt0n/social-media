@@ -2,3 +2,5 @@
 *.docx
 *.env
 .idea
+
+minio-data/
