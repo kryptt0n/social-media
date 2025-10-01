@@ -11,7 +11,7 @@ services:
       MINIO_ROOT_USER: ${S3_ROOT_USERNAME}
       MINIO_ROOT_PASSWORD: ${S3_ROOT_PASSWORD}
     volumes:
-      - ./minio-data:/data
+      - minio_data:/data
     networks:
       - my_network
 
@@ -324,6 +324,7 @@ services:
 
 volumes:
   db_data:
+  minio_data: 
 
 networks:
   my_network:
