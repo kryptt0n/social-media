@@ -22,7 +22,7 @@ jobs:
           sudo curl -L https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 \
             -o /usr/local/bin/yq && sudo chmod +x /usr/local/bin/yq
 
-      - name: Calculate changed services (name-agnostic)
+      - name: Calculate changed services (name-agnostic + submodule-aware)
         id: calc
         env:
           BEFORE: ${{ github.event.before }}
@@ -30,35 +30,65 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Resolve compose file
+          # 1) Resolve compose file
           COMPOSE_FILE="$(ls -1 docker-compose.yml compose.yml compose.yaml 2>/dev/null | head -n1 || true)"
           [ -z "${COMPOSE_FILE:-}" ] && echo "No compose file found" && exit 1
 
-          # Ensure BEFORE is usable (handle null SHA)
+          # 2) Normalize BEFORE (handle null SHA)
           if [ -z "${BEFORE:-}" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
             BEFORE="$(git rev-parse HEAD~1 2>/dev/null || echo "$AFTER")"
           fi
 
-          # Compute changed files
+          # 3) Compute changed files in parent repo
           CHANGED_FILES="$(git diff --name-only "$BEFORE" "$AFTER" || true)"
 
-          # If compose/.env/workflows changed → full refresh
+          # 4) Full refresh triggers
           if echo "$CHANGED_FILES" | grep -Eiq '(^|/)(docker-compose|compose)\.(yml|yaml)$|(^|/)\.env$|^\.github/workflows/'; then
             echo "restart_all=true" >> "$GITHUB_OUTPUT"
             echo "services=" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          # Parse service names from compose
+          # 5) Parse existing compose services
           mapfile -t EXISTING < <(yq -r '.services | keys[]' "$COMPOSE_FILE" | sort -u)
 
-          # Build candidates from path prefixes
+          # Helper: function to check if a service exists in compose
+          exists_in_compose () { printf '%s\n' "${EXISTING[@]}" | grep -qx "$1"; }
+
+          # 6) If BACKEND submodule pointer changed at root → restart all services that mount ./social-media-backend/
+          if echo "$CHANGED_FILES" | grep -Eq '^social-media-backend($|/)'; then
+            mapfile -t BACKEND_SERVICES < <(
+              yq -r '
+                .services
+                | to_entries[]
+                | select(
+                    (.value.volumes // [])
+                    | any(. ; test("^\\./social-media-backend/"))
+                  )
+                | .key
+              ' "$COMPOSE_FILE" | sort -u
+            )
+            SERVICES="$(printf '%s ' "${BACKEND_SERVICES[@]}")"
+            echo "services=$SERVICES"   >> "$GITHUB_OUTPUT"
+            echo "restart_all=false"    >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # 7) If FRONTEND submodule pointer changed at root → restart frontend (if present)
+          if echo "$CHANGED_FILES" | grep -Eq '^social-media-frontend($|/)'; then
+            if exists_in_compose "frontend"; then
+              echo "services=frontend"  >> "$GITHUB_OUTPUT"
+              echo "restart_all=false"  >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          fi
+
+          # 8) Otherwise: map file-paths → candidate services
           mapfile -t CANDIDATES < <(printf '%s\n' "$CHANGED_FILES" | awk -F/ '
             $1=="social-media-frontend" {print "frontend"}
             $1=="social-media-backend" && NF>=2 {print $2}
           ' | sort -u)
 
-          # Keep only candidates that exist in compose
           SERVICES=""
           for s in "${CANDIDATES[@]:-}"; do
             if printf '%s\n' "${EXISTING[@]}" | grep -qx "$s"; then
@@ -76,6 +106,11 @@ jobs:
     env:
       APP_DIR: /home/vityzy/social-media
     steps:
+      - name: Prep Git safe.directory (optional but handy)
+        run: |
+          set -euo pipefail
+          git config --global --add safe.directory "$APP_DIR" || true
+
       - name: Pull latest code into server clone (keeps server-side .env)
         run: |
           set -euo pipefail
@@ -101,7 +136,7 @@ jobs:
             docker compose up -d
           else
             echo "Restarting changed services: ${{ needs.detect-changes.outputs.services }}"
-            docker compose up -d --no-deps ${{ needs.detect-changes.outputs.services }}
+            docker compose restart ${{ needs.detect-changes.outputs.services }}
           fi
 
       - name: Cleanup
