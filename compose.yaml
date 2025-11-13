@@ -310,6 +310,49 @@ services:
     depends_on:
       - consul-server
 
+  ms-ss-ai:
+    image: openjdk:21-jdk
+    ports:
+      - "8481:8481"
+    networks:
+      - my_network
+    volumes:
+      - ./social-media-backend/ms-ss-ai:/app/ms-ss-ai
+    working_dir: /app/ms-ss-ai
+    environment:
+      - AI_MODEL=${AI_MODEL}
+      - AI_URL=${AI_URL}
+    command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
+    depends_on:
+      - consul-server
+      - ollama
+
+  ms-os-automation:
+    image: openjdk:21-jdk
+    ports:
+      - "8780:8780"
+    networks:
+      - my_network
+    volumes:
+      - ./social-media-backend/ms-os-automation:/app/ms-os-automation
+    working_dir: /app/ms-os-automation
+    command: bash -c "chmod +x ./mvnw && ./mvnw spring-boot:run && tail -f /dev/null"
+    depends_on:
+      - consul-server
+      - ms-ss-ai
+
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    ports:
+      - "11435:11434"
+    volumes:
+      - ollama:/root/.ollama           # persist models/cache
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+    networks:
+      - my_network
+
   frontend:
     image: node:22.13.0-alpine3.21
     ports:
@@ -321,9 +364,30 @@ services:
     networks:
       - my_network
 
+  pull-qwen3-0_6b:
+    image: curlimages/curl:8.9.1
+    depends_on:
+      - ollama
+    entrypoint:
+      - sh
+      - -c
+      - |
+        echo "Waiting for Ollama..." ;
+        until curl -sf http://ollama:11434/api/tags >/dev/null; do sleep 1; done ;
+        echo "Pulling qwen3:0.6b..." ;
+        curl -sf -X POST http://ollama:11434/api/pull \
+          -H 'Content-Type: application/json' \
+          -d '{"name":"qwen3:0.6b"}' ;
+        echo "Done. Sleeping to stay 'healthy' for logs then exit." ;
+        sleep 2
+    networks:
+      - my_network
+
+
 volumes:
   db_data:
   minio_data: 
+  ollama:
 
 networks:
   my_network:
