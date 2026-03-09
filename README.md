@@ -1,9 +1,15 @@
 # Social Media Project
 
 Social Media Project is a Twitter-like application designed to showcase the Microservice Architecture Pattern. It
-leverages technologies such as Spring Boot, Spring Cloud, Kafka, Consul, MySQL, React, and AWS S3.
+leverages technologies such as Spring Boot, Spring Cloud, Kafka, Consul, MySQL, React, Ollama, Redis and AWS S3.
 
 The entire project is fully dockerized for seamless deployment.
+
+## 🚀 Live Demo
+
+Try the running application:
+
+**🔗 https://sm.vitalysukhinin.com**
 
 # Content
 
@@ -18,6 +24,7 @@ The entire project is fully dockerized for seamless deployment.
     - [Database](#database)
     - [Object Storage](#object-storage)
     - [Mailing](#mailing)
+    - [AI Integration](#ai-integration)
 - [Contributors](#contributors)
 
 # How to Run
@@ -33,14 +40,36 @@ In the root (/social-media), create a .env and add the following:
 ```env
 MYSQL_DATABASE=[your_database_name] 
 MYSQL_ROOT_PASSWORD=[your_password] 
+
 JWT_KEY=[generated_key(512)]
+
 FRONT_END_URL=[front_end_url(http://localhost:3000)]
+
 SMTP_USERNAME=[google_account]
 SMTP_PASSWORD=[google_app_password]
-AWS_REGION=[aws_region(ca-central-1)]
-AWS_ACCESS_KEY_ID=[access_key]
-AWS_SECRET_ACCESS_KEY=[secret_key]
-AWS_S3_BUCKET_NAME=[S3_bucket_name]
+
+S3_REGION=[aws_region(ca-central-1)]
+S3_ACCESS_KEY_ID=[s3_access_key]
+S3_SECRET_ACCESS_KEY=[s3_secret_key]
+S3_BUCKET_NAME=[s3_bucket_name(social-network)]
+S3_INTERNAL_ENDPOINT=[internal_s3_endpoint(http://minio:9000)]
+S3_PUBLIC_ENDPOINT=[public_s3_endpoint(http://localhost:9000)]
+S3_ROOT_USERNAME=[minio_root_username]
+S3_ROOT_PASSWORD=[minio_root_password]
+
+AI_MODEL=[ai_model_name]
+AI_URL=[ai_service_url]
+
+OAUTH_DOMAIN=[oauth_provider_domain(e.g. auth0_domain)]
+OAUTH_CLIENT_ID=[oauth_client_id]
+OAUTH_CLIENT_SECRET=[oauth_client_secret]
+OAUTH_REDIRECT=[oauth_callback_url]
+OAUTH_MAIN_URL=[frontend_main_url]
+OAUTH_USERNAME_URL=[frontend_username_setup_url]
+
+REDIS_PASSWORD=[redis_password]
+REDIS_HOST=[redis_host]
+REDIS_PORT=[redis_port]
 ```
 
 For more information of SMTP credentials, visit https://support.google.com/accounts/answer/185833
@@ -57,23 +86,24 @@ To remove all container including volumes, run
 docker compose down -v
 ```
 
-There should be 18 containers running including
+There should be 23 containers running including
 
-- 1 Database
+- 3 Databases
 - 1 Front End
 - 1 Kafka
 - 1 Kafka UI
 - 1 Consul
 - 1 Gateway
-- 4 Orchestrations
-- 8 Choreography
+- 5 Orchestrations
+- 9 Choreography
+- 1 Ollama
 
 ![img.png](img.png)
 
-In the Consul UI, should be 14 services running
+In the Consul UI, should be 16 services running
 ![img_1.png](img_1.png)
 
-One consumer and one topic in Kafka UI
+One consumer and twp topics in Kafka UI
 ![img_2.png](img_2.png)
 
 # Project Structure
@@ -143,6 +173,9 @@ Contains initialization scripts, SQL schemas, and Docker setup for the MySQL
 database. Each microservice may have its own schema (following the Database-per-Service
 pattern), ensuring autonomy and encapsulation of data. All schemas are in one single database instance.
 
+Identity Orchestration microservice has it's own cache implemented by Redis to ensure fast access 
+to demanding resources.
+
 ## Object Storage
 
 Manages the integration with AWS S3 for storing and retrieving user-uploaded images or files.
@@ -154,6 +187,12 @@ and S3 bucket management.
 Handles the email notification system using SMTP. It's responsible for  
 password resets, and other notification emails. It’s configured to work with Gmail SMTP
 and uses secure application credentials.
+
+## AI Integration
+
+Provides AI-powered content generation for automated users on the platform.  
+The service integrates with **Ollama** to run local large language models that generate posts dynamically for AI-driven accounts. These AI users simulate realistic activity within the social network by periodically creating posts based on prompts or predefined behaviors. Running the models through Ollama allows the system to keep inference **local, efficient, and fully controllable**, without relying on external AI APIs.
+
 
 # Contributors
 
