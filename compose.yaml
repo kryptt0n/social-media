@@ -72,7 +72,7 @@ services:
       - my_network
 
   gateway:
-    image: openjdk:21-jdk
+    image: maven:3-amazoncorretto-21
     volumes:
       - ./social-media-backend/gateway:/app/gateway
     working_dir: /app/gateway
@@ -85,7 +85,7 @@ services:
       - consul-server
 
   kafka:
-    image: confluentinc/cp-kafka:latest
+    image: apache/kafka
     depends_on:
       - consul-server
     ports:
@@ -120,7 +120,7 @@ services:
       my_network:
 
   ms-ss-media-exchange:
-    image: openjdk:21-jdk
+    image: maven:3-amazoncorretto-21
     ports:
       - "8580:8580"
     networks:
@@ -145,7 +145,7 @@ services:
       - social-media-database
 
   ms-os-user-profile:
-    image: openjdk:21-jdk
+    image: maven:3-amazoncorretto-21
     ports:
       - "8180:8180"
     networks:
@@ -161,7 +161,7 @@ services:
       - ms-ss-follow
 
   ms-ss-user-profile-crud:
-    image: openjdk:21-jdk
+    image: maven:3-amazoncorretto-21
     ports:
       - "8181:8181"
     networks:
@@ -180,7 +180,7 @@ services:
       - social-media-database
 
   ms-ss-follow:
-    image: openjdk:21-jdk
+    image: maven:3-amazoncorretto-21
     ports:
       - "8182:8182"
     networks:
@@ -199,7 +199,7 @@ services:
       - social-media-database
 
   ms-os-identity:
-    image: openjdk:21-jdk
+    image: maven:3-amazoncorretto-21
     ports:
       - "8280:8280"
     networks:
@@ -225,7 +225,7 @@ services:
       - ms-ss-jwt
 
   ms-ss-credentials:
-    image: openjdk:21-jdk
+    image: maven:3-amazoncorretto-21
     ports:
       - "8281:8281"
     networks:
@@ -248,7 +248,7 @@ services:
       - social-media-database
 
   ms-ss-jwt:
-    image: openjdk:21-jdk
+    image: maven:3-amazoncorretto-21
     ports:
       - "8282:8282"
     networks:
@@ -268,7 +268,7 @@ services:
       - social-media-database
 
   ms-os-post:
-    image: openjdk:21-jdk
+    image: maven:3-amazoncorretto-21
     ports:
       - "8380:8380"
     networks:
@@ -285,7 +285,7 @@ services:
       - ms-ss-media-exchange
 
   ms-ss-like:
-    image: openjdk:21-jdk
+    image: maven:3-amazoncorretto-21
     ports:
       - "8381:8381"
     networks:
@@ -304,7 +304,7 @@ services:
       - social-media-database
 
   ms-ss-comment:
-    image: openjdk:21-jdk
+    image: maven:3-amazoncorretto-21
     ports:
       - "8382:8382"
     networks:
@@ -323,7 +323,7 @@ services:
       - social-media-database
 
   ms-ss-post:
-    image: openjdk:21-jdk
+    image: maven:3-amazoncorretto-21
     ports:
       - "8384:8384"
     networks:
@@ -342,7 +342,7 @@ services:
       - social-media-database
 
   ms-os-admin:
-    image: openjdk:21-jdk
+    image: maven:3-amazoncorretto-21
     ports:
       - "8680:8680"
     networks:
@@ -355,7 +355,7 @@ services:
       - consul-server
 
   ms-ss-ai:
-    image: openjdk:21-jdk
+    image: maven:3-amazoncorretto-21
     ports:
       - "8481:8481"
     networks:
@@ -372,7 +372,7 @@ services:
       - ollama
 
   ms-os-automation:
-    image: openjdk:21-jdk
+    image: maven:3-amazoncorretto-21
     ports:
       - "8780:8780"
     networks:
